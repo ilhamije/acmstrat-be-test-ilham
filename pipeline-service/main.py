@@ -1,6 +1,14 @@
+import os
+import logging
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
-import os
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("pipeline-service")
 
 from database import engine, get_db, Base
 from models.customer import Customer
@@ -13,6 +21,7 @@ app = FastAPI(title="Pipeline Service")
 
 @app.get("/")
 def read_root():
+    logger.info("Health check endpoint called")
     return {"message": "Pipeline Service is running"}
 
 @app.post("/api/ingest")

@@ -1,20 +1,33 @@
 import json
+import logging
 from flask import Flask, jsonify, request, abort
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger("mock-server")
 
 app = Flask(__name__)
 
 # Load customers from JSON file
 def load_customers():
-    with open('data/customers.json', 'r') as f:
-        return json.load(f)
+    try:
+        with open('data/customers.json', 'r') as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error(f"Failed to load customers data: {str(e)}")
+        return []
 
 @app.route('/api/customers', methods=['GET'])
 def get_customers():
-    customers = load_customers()
-    
-    # Pagination
     page = request.args.get('page', default=1, type=int)
     limit = request.args.get('limit', default=10, type=int)
+    
+    logger.info(f"Fetching customers - Page: {page}, Limit: {limit}")
+    
+    customers = load_customers()
     
     start = (page - 1) * limit
     end = start + limit
@@ -31,11 +44,12 @@ def get_customers():
 
 @app.route('/api/customers/<string:customer_id>', methods=['GET'])
 def get_customer(customer_id):
+    logger.info(f"Fetching customer: {customer_id}")
     customers = load_customers()
-    # Search by customer_id (String)
     customer = next((c for c in customers if c['customer_id'] == customer_id), None)
     
     if customer is None:
+        logger.warning(f"Customer not found: {customer_id}")
         return jsonify({'error': 'Customer not found'}), 404
         
     return jsonify(customer)

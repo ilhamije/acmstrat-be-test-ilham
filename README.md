@@ -45,7 +45,7 @@ This project implements a high-performance data ingestion pipeline that fetches 
 3. The services will be available at:
    - **Mock Server**: `http://localhost:5000`
    - **Pipeline Service**: `http://localhost:8000`
-   - **PostgreSQL**: `localhost:5435` (Port mapped from 5432)
+   - **PostgreSQL**: `localhost:5432`
 
 ### Triggering Ingestion
 
@@ -61,6 +61,28 @@ Expected Response:
   "records_processed": 25
 }
 ```
+
+### Monitoring Logs
+
+To track the ingestion process or debug any issues, you can view the live logs from the Docker containers via terminal or use Docker Desktop for a better UI experience:
+
+**From Terminal:**
+
+- **Mock Server logs:**
+```bash
+docker-compose logs -f mock-server
+```
+
+- **Pipeline Service logs:**
+```bash
+docker-compose logs -f pipeline-service
+```
+
+**Using Docker Desktop:**
+1. Open Docker Desktop.
+2. Go to the "Containers" tab.
+3. Select the `the-project` stack.
+4. Click on either the `mock-server` or `pipeline-service` container to see the Logs tab for a more interactive and searchable UI.
 
 ## Testing
 
